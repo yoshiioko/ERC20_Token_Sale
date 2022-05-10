@@ -19,5 +19,9 @@
   "homepage": "https://github.com/yoshiioko/ERC20_Token_Sale#readme",
   "dependencies": {
     "@openzeppelin/contracts": "^3.0.0"
+  },
+  "devDependencies": {
+    "ganache-cli": "^6.12.2",
+    "truffle": "^5.5.13"
   }
 }
