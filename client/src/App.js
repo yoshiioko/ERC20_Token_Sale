@@ -9,7 +9,7 @@ import "./App.css";
 class App extends Component {
   state = {
     loaded: false,
-    kycAddress: "0x123",
+    kycAddress: "",
     tokenSaleAddress: "",
     userTokens: 0,
   };
@@ -38,7 +38,7 @@ class App extends Component {
           MyTokenSale.networks[this.networkId].address
       );
 
-      this.KycContract = new this.web3.eth.Contract(
+      this.kycContract = new this.web3.eth.Contract(
         KycContract.abi,
         KycContract.networks[this.networkId] &&
           KycContract.networks[this.networkId].address
@@ -46,13 +46,9 @@ class App extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      //this.setState({ web3, accounts, contract: instance }, this.runExample);
-      this.listenToTokenTranser();
+      this.listenToTokenTransfer();
       this.setState(
-        {
-          loaded: true,
-          tokenSaleAddress: this.myTokenSale._address,
-        },
+        { loaded: true, tokenSaleAddress: this.myTokenSale._address },
         this.updateUserTokens
       );
     } catch (error) {
@@ -68,7 +64,6 @@ class App extends Component {
     const target = event.target;
     const value = target.type === "checkbox" ? target.checked : target.value;
     const name = target.name;
-
     this.setState({
       [name]: value,
     });
@@ -76,10 +71,9 @@ class App extends Component {
 
   handleKycSubmit = async () => {
     const { kycAddress } = this.state;
-    await this.KycContract.setKycCompeleted(kycAddress).send({
-      from: this.accounts[0],
-    });
-
+    await this.kycContract.methods
+      .setKycCompleted(kycAddress)
+      .send({ from: this.accounts[0] });
     alert("Account " + kycAddress + " is now whitelisted");
   };
 
@@ -93,11 +87,10 @@ class App extends Component {
     let userTokens = await this.myToken.methods
       .balanceOf(this.accounts[0])
       .call();
-
     this.setState({ userTokens: userTokens });
   };
 
-  listenToTokenTranser = async () => {
+  listenToTokenTransfer = async () => {
     this.myToken.events
       .Transfer({ to: this.accounts[0] })
       .on("data", this.updateUserTokens);
