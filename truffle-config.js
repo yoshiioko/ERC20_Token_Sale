@@ -23,6 +23,16 @@ module.exports = {
       },
       network_id: 5777,
     },
+    rinkeby_infura: {
+      provider: function () {
+        return new HDWalletProvider(
+          process.env.MNEMONIC,
+          "https://rinkeby.infura.io/v3/fb967a8f7ca84aa4b6c99cffd33b55a5",
+          MetaMastAccountIndex
+        );
+      },
+      network_id: 4,
+    },
   },
   compilers: {
     solc: {
